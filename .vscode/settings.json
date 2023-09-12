@@ -1,0 +1,23 @@
+{
+    "workbench.colorCustomizations": {
+        "activityBar.background": "#37137A",
+        "titleBar.activeBackground": "#f23f17",
+        "titleBar.activeForeground": "#FBFAFE"
+    },
+    "git.ignoreLimitWarning": true,
+    "sqltools.connections": [
+        {
+            "mysqlOptions": {
+                "authProtocol": "default",
+                "enableSsl": "Disabled"
+            },
+            "previewLimit": 50,
+            "server": "localhost",
+            "port": 3306,
+            "driver": "MySQL",
+            "name": "idrv3",
+            "database": "audit_responses_db",
+            "username": "root"
+        }
+    ]
+}
