@@ -1,0 +1,120 @@
+// import React, { useState } from 'react';
+// import axios from 'axios';
+
+// function CRUDPage() {
+//     const [items, setItems] = useState([]);
+//     const [specificItem, setSpecificItem] = useState(null);
+//     const [error, setError] = useState(null);
+//     const [selectedTable, setSelectedTable] = useState('');
+//     const [inputValues, setInputValues] = useState({});
+
+//     const tableOptions = ['auditeurs', 'audits', 'clients', 'constats', 'contacts_clients', 'elements_audites_details_prestations', 'elements', 'gestionnaires', 'legendes', 'notes_structures', 'reponses_possibles', 'restaurants', 'salutations'];
+
+    // const handleInputChange = (e) => {
+//         const { name, value } = e.target;
+//         setInputValues(prevValues => ({
+//             ...prevValues,
+//             [name]: value
+//         }));
+//     };
+
+//     const handleAddItem = async () => {
+//         const newItem = prompt(`Please enter the new ${selectedTable.toLowerCase()}:`);
+//         const dataToSend = { [selectedTable.slice(0, -1)]: newItem };
+
+//         try {
+//             const response = await axios.post(`http://localhost:5001/${selectedTable}/`, dataToSend);
+//             alert(response.data.message);
+//         } catch (err) {
+//             setError(err.message);
+//         }
+//     };
+
+//     const handleViewItem = async () => {
+//         const itemId = prompt(`Please enter the ID of the ${selectedTable} to view:`);
+//         try {
+//             const response = await axios.get(`http://localhost:5001/${selectedTable}/${itemId}`);
+//             setSpecificItem(response.data);
+//         } catch (err) {
+//             setError(err.message);
+//         }
+//     };
+    
+//     const handleViewAllItems = async () => {
+//         try {
+//             const response = await axios.get(`http://localhost:5001/${selectedTable}`);
+//             setItems(response.data);
+//         } catch (err) {
+//             setError(err.message);
+//         }
+//     };
+    
+//     const handleUpdateItem = async () => {
+//         const itemId = prompt(`Please enter the ID of the ${selectedTable} to update:`);
+//         try {
+//             await axios.put(`http://localhost:5001/${selectedTable}/${itemId}`, inputValues);
+//             alert('Updated successfully!');
+//         } catch (err) {
+//             setError(err.message);
+//         }
+//     };
+    
+//     const handleDeleteItem = async () => {
+//         const itemId = prompt(`Please enter the ID of the ${selectedTable} to delete:`);
+//         try {
+//             await axios.delete(`http://localhost:5001/${selectedTable}/${itemId}`);
+//             alert('Deleted successfully!');
+//         } catch (err) {
+//             setError(err.message);
+//         }
+//     };
+    
+
+//     return (
+//         <div>
+//             <h2>Manage Data</h2>
+
+//             <select value={selectedTable} onChange={(e) => setSelectedTable(e.target.value)}>
+//                 <option value="" disabled>Select Table</option>
+//                 {tableOptions.map(table => (
+//                     <option key={table} value={table}>{table}</option>
+//                 ))}
+//             </select>
+
+//             {selectedTable && (
+//                 <div>
+//                     <button onClick={handleAddItem}>Ajouter {selectedTable}</button>
+//                     <button onClick={handleViewItem}>Voir {selectedTable}</button>
+//                     <button onClick={handleViewAllItems}>Voir tous {selectedTable}</button>
+//                     <button onClick={handleUpdateItem}>Modifier {selectedTable}</button>
+//                     <button onClick={handleDeleteItem}>Supprimer {selectedTable}</button>
+//                 </div>
+//             )}
+
+//             {error && <div style={{ color: 'red' }}>{error}</div>}
+
+//             {specificItem && (
+//                 <div>
+//                     <h3>Details of Selected Item:</h3>
+//                     {Object.entries(specificItem).map(([key, value]) => (
+//                         <p key={key}>{key}: {value}</p>
+//                     ))}
+//                     <button onClick={() => setSpecificItem(null)}>
+//                         Clear Displayed Item Details
+//                     </button>
+//                 </div>
+//             )}
+
+//             {/* Displaying the fetched items */}
+//             <ul>
+//                 {items.map(item => (
+//                     <li key={item[`${selectedTable.slice(0, -1)}_id`]}>
+//                         ID: {item[`${selectedTable.slice(0, -1)}_id`]} - Name: {item[selectedTable.slice(0, -1)]}
+//                     </li>
+//                 ))}
+//             </ul>
+//         </div>
+//     );
+// }
+
+// export default CRUDPage;

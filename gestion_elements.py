@@ -1,132 +1,81 @@
-#FICHIER POUR METTRE À JOUR DES QUESTIONS DANS LES AUDITS
-
-import pandas as pd
+import mysql.connector
 from db_utils import create_connection
-from mettre_a_jour_questions import mettre_a_jour_questions
 
 
-DATA_QUESTIONS_CSV = 'data_questions.csv'
+def ajouter_element(data):
+    cnx, cursor = create_connection()
+    
+    chapitre = data.get('chapitre')
+    titre = data.get('titre')
+    sous_titre = data.get('sous_titre')
+    element_nom = data.get('element_nom')
+    notes_structure_id = data.get('notes_structure_id') # This assumes you're passing the related ID directly.
 
-def modifier_element():
-    element_id = input("Entrez l'ID de l'élément à modifier: ")
+    if not chapitre or not titre or not sous_titre or not element_nom:
+        return {"message": "All element details are required!"}
 
-    df = pd.read_csv(DATA_QUESTIONS_CSV, delimiter=';')
-
-    if int(element_id) > len(df):
-        print("ID de l'élément non trouvé!")
-        return
-
-    current_values = df.iloc[int(element_id)-1]
-    print("Laissez le champ vide pour conserver la valeur actuelle.")
-    chapitre = input(f"Chapitre (actuel: {current_values['chapitre']}): ") or current_values['chapitre']
-    titre = input(f"Titre (actuel: {current_values['titre']}): ") or current_values['titre']
-    sous_titre = input(f"Sous-titre (actuel: {current_values['sous_titre']}): ") or current_values['sous_titre']
-    element_nom = input(f"Nom de l'élément (actuel: {current_values['element_nom']}): ") or current_values['element_nom']
-
-    df.at[int(element_id)-1, 'chapitre'] = chapitre
-    df.at[int(element_id)-1, 'titre'] = titre
-    df.at[int(element_id)-1, 'sous_titre'] = sous_titre
-    df.at[int(element_id)-1, 'element_nom'] = element_nom
-
-    df.to_csv(DATA_QUESTIONS_CSV, sep=';', index=False)
-    mettre_a_jour_questions(df)
-
-def supprimer_element():
-    element_id = input("Entrez l'ID de l'élément à supprimer: ")
-
-    df = pd.read_csv(DATA_QUESTIONS_CSV, delimiter=';')
-
-    if int(element_id) > len(df):
-        print("ID de l'élément non trouvé!")
-        return
-
-    df.drop(int(element_id)-1, inplace=True)
-    df.to_csv(DATA_QUESTIONS_CSV, sep=';', index=False)
-    mettre_a_jour_questions(df)
-
-import pandas as pd
-from db_utils import create_connection
-from mettre_a_jour_questions import mettre_a_jour_questions
-
-DATA_QUESTIONS_CSV = 'data_questions.csv'
-
-def ajouter_element():
-    chapitre = input("Entrez le chapitre: ")
-    titre = input("Entrez le titre: ")
-    sous_titre = input("Entrez le sous-titre: ")
-    element_nom = input("Entrez le nom de l'élément: ")
-
-    new_element = pd.DataFrame({
-        'chapitre': [chapitre],
-        'titre': [titre],
-        'sous_titre': [sous_titre],
-        'element_nom': [element_nom]
-    })
-
-    df = pd.read_csv(DATA_QUESTIONS_CSV, delimiter=';')
-    df = pd.concat([df, new_element], ignore_index=True)
-    df.to_csv(DATA_QUESTIONS_CSV, sep=';', index=False)
-
-    mettre_a_jour_questions(df)
-
-
-
-def voir_element():
-    element_id = input("Entrez l'ID de l'élément à voir: ")
-
-    df = pd.read_csv(DATA_QUESTIONS_CSV, delimiter=';')
-
-    if int(element_id) > len(df) or int(element_id) <= 0:
-        print("ID de l'élément non trouvé!")
-        return
-
-    element_details = df.iloc[int(element_id)-1]
-    print("\nDétails de l'élément:")
-    for col, value in element_details.items():
-        print(f"{col}: {value}")
-
+    cursor.execute("""
+        INSERT INTO elements (chapitre, titre, sous_titre, element_nom, notes_structure_id)
+        VALUES (%s, %s, %s, %s, %s)
+    """, (chapitre, titre, sous_titre, element_nom, notes_structure_id))
+    
+    cnx.commit()
+    cursor.close()
+    cnx.close()
+    return {"message": "Element ajouté avec succès!"}
 
 def afficher_elements():
-    df = pd.read_csv(DATA_QUESTIONS_CSV, delimiter=';')
-    print(df)
+    cnx, cursor = create_connection(dictionary=True)
+    cursor.execute("SELECT * FROM elements")
+    elements = cursor.fetchall()
+    cursor.close()
+    cnx.close()
+    print(elements)
+    return elements
 
+def modifier_element(element_id, data):
+    cnx, cursor = create_connection(dictionary=True)
+    
+    cursor.execute(f"SELECT * FROM elements WHERE element_id = %s", (element_id,))
+    details = cursor.fetchone()
 
-def menu():
-    print("\nGestion des éléments:")
-    print("1. Ajouter un élément")
-    print("2. Afficher les éléments")
-    print("3. Modifier un élément")
-    print("4. Supprimer un élément")
-    print("5. Voir un élément")
-    print("6. Quitter")
-    choix = input("\nEntrez votre choix: ")
-    return choix
+    if not details:
+        return {"message": "Element non trouvé!"}
 
-if __name__ == "__main__":
-    while True:
-        user_choice = menu()
-        if user_choice == '1':
-            ajouter_element()
-        elif user_choice == '2':
-            afficher_elements()
-        elif user_choice == '3':
-            modifier_element()
-        elif user_choice == '5':
-            voir_element()
-        elif user_choice == '4':
-            supprimer_element()
-        elif user_choice == '6':
-            print("Au revoir!")
-            break
-        else:
-            print("Choix invalide. Veuillez réessayer.")
+    # Using the provided data or existing values from the database.
+    new_chapitre = data.get('chapitre') or details['chapitre']
+    new_titre = data.get('titre') or details['titre']
+    new_sous_titre = data.get('sous_titre') or details['sous_titre']
+    new_element_nom = data.get('element_nom') or details['element_nom']
+    new_notes_structure_id = data.get('notes_structure_id') or details['notes_structure_id']
 
+    cursor.execute("""
+        UPDATE elements
+        SET chapitre = %s, titre = %s, sous_titre = %s, element_nom = %s, notes_structure_id = %s
+        WHERE element_id = %s
+    """, (new_chapitre, new_titre, new_sous_titre, new_element_nom, new_notes_structure_id, element_id))
+    
+    cnx.commit()
+    cursor.close()
+    cnx.close()
+    return {"message": "Element modifié avec succès!"}
 
+def supprimer_element(element_id):
+    cnx, cursor = create_connection()
+    cursor.execute(f"DELETE FROM elements WHERE element_id = %s", (element_id,))
+    cnx.commit()
+    cursor.close()
+    cnx.close()
+    return {"message": "Element supprimé avec succès!"}
 
-# Main execution
-if __name__ == "__main__":
-    # Load the CSV data
-    data_questions = pd.read_csv(DATA_QUESTIONS_CSV, delimiter=';')
-    # Call the function to insert data
-    mettre_a_jour_questions(data_questions)
-    print("Data from CSV inserted successfully!")
+def visualiser_element(element_id):
+    cnx, cursor = create_connection(dictionary=True)
+    cursor.execute(f"SELECT * FROM elements WHERE element_id = %s", (element_id,))
+    details = cursor.fetchone()
+    cursor.close()
+    cnx.close()
+
+    if not details:
+        return {"message": "Element non trouvé!"}
+
+    return details

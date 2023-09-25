@@ -1,33 +1,36 @@
 import mysql.connector
 from db_utils import create_connection
 
-def ajouter_restaurant():
+def ajouter_restaurant(data):
     cnx, cursor = create_connection()
 
-    # Gather data from the user
-    restaurant_nom = input("Entrez le nom du restaurant: ")
-    restaurant_adresse1 = input("Entrez l'adresse 1 du restaurant: ")
-    restaurant_adresse2 = input("Entrez l'adresse 2 du restaurant (laissez vide si inexistante): ")
-    restaurant_adresse3 = input("Entrez l'adresse 3 du restaurant (laissez vide si inexistante): ")
-    restaurant_cp = input("Entrez le code postal du restaurant: ")
-    restaurant_ville = input("Entrez la ville du restaurant: ")
-    restaurant_coords = input("Entrez les coordonnées du restaurant (par exemple, lat,long): ")
-    client_id = input("Entrez l'ID du client associé au restaurant: ")
+    # Extract data from the provided payload
+    restaurant_nom = data["restaurant_nom"]
+    restaurant_adresse1 = data["restaurant_adresse1"]
+    restaurant_adresse2 = data.get("restaurant_adresse2", "")  # .get() to handle optional fields
+    restaurant_adresse3 = data.get("restaurant_adresse3", "")
+    restaurant_cp = data["restaurant_cp"]
+    restaurant_ville = data["restaurant_ville"]
+    restaurant_coords = data["restaurant_coords"]
+    client_id = data["client_id"]
 
-    # Insert into restaurants table
-    cursor.execute("""
-        INSERT INTO restaurants (restaurant_nom, restaurant_adresse1, restaurant_adresse2, 
-                                 restaurant_adresse3, restaurant_cp, restaurant_ville, 
-                                 restaurant_coords, client_id)
-        VALUES (%s, %s, %s, %s, %s, %s, %s, %s)
-    """, (restaurant_nom, restaurant_adresse1, restaurant_adresse2, restaurant_adresse3,
-          restaurant_cp, restaurant_ville, restaurant_coords, client_id))
+    try:
+        # Insert into restaurants table
+        cursor.execute("""
+            INSERT INTO restaurants (restaurant_nom, restaurant_adresse1, restaurant_adresse2, 
+                                     restaurant_adresse3, restaurant_cp, restaurant_ville, 
+                                     restaurant_coords, client_id)
+            VALUES (%s, %s, %s, %s, %s, %s, %s, %s)
+        """, (restaurant_nom, restaurant_adresse1, restaurant_adresse2, restaurant_adresse3,
+              restaurant_cp, restaurant_ville, restaurant_coords, client_id))
 
-    cnx.commit()
+        cnx.commit()
+        cursor.close()
+        cnx.close()
+        return {"message": "Restaurant ajouté avec succès!"}
+    except Exception as e:
+        return {"error": str(e)}
 
-    print("Restaurant ajouté avec succès!")
-    cursor.close()
-    cnx.close()
 
 
 def afficher_restaurants():
@@ -36,60 +39,51 @@ def afficher_restaurants():
     cursor.execute("SELECT * FROM restaurants")
     results = cursor.fetchall()
 
-    for restaurant in results:
-        print(restaurant)
-
     cursor.close()
     cnx.close()
+    return results
 
+def modifier_restaurant(restaurant_id, updated_data):
+    cnx, cursor = create_connection()
 
-def modifier_restaurant():
-    cnx, cursor = create_connection(dictionary=True)
-
-    # Ask user for restaurant ID
-    restaurant_id = input("Entrez l'ID du restaurant à modifier: ")
-
-    # Fetch the current details of the restaurant
+    # 1. Fetch Current Data
     cursor.execute("SELECT * FROM restaurants WHERE restaurant_id = %s", (restaurant_id,))
-    restaurant = cursor.fetchone()
-    if not restaurant:
-        print("Restaurant non trouvé!")
-        return
+    current_data = cursor.fetchone()
 
-    print("Détails actuels du restaurant:")
-    for key, value in restaurant.items():
-        print(f"{key}: {value}")
+    columns = ["restaurant_nom", "restaurant_adresse1", "restaurant_adresse2", 
+               "restaurant_adresse3", "restaurant_cp", "restaurant_ville", 
+               "restaurant_coords", "client_id"]  # Add other column names as required.
 
-    # Prompt user for new details
-    restaurant_nom = input(f"Entrez le nouveau nom du restaurant ({restaurant['restaurant_nom']}): ") or restaurant['restaurant_nom']
-    restaurant_adresse1 = input(f"Entrez la nouvelle adresse 1 du restaurant ({restaurant['restaurant_adresse1']}): ") or restaurant['restaurant_adresse1']
-    restaurant_adresse2 = input(f"Entrez la nouvelle adresse 2 du restaurant ({restaurant['restaurant_adresse2']}): ") or restaurant['restaurant_adresse2']
-    restaurant_adresse3 = input(f"Entrez la nouvelle adresse 3 du restaurant ({restaurant['restaurant_adresse3']}): ") or restaurant['restaurant_adresse3']
-    restaurant_cp = input(f"Entrez le nouveau code postal du restaurant ({restaurant['restaurant_cp']}): ") or restaurant['restaurant_cp']
-    restaurant_ville = input(f"Entrez la nouvelle ville du restaurant ({restaurant['restaurant_ville']}): ") or restaurant['restaurant_ville']
-    restaurant_coords = input(f"Entrez les nouvelles coordonnées du restaurant ({restaurant['restaurant_coords']}): ") or restaurant['restaurant_coords']
-    client_id = input(f"Entrez le nouvel ID du client associé au restaurant ({restaurant['client_id']}): ") or restaurant['client_id']
+    current_data_dict = dict(zip(columns, current_data))
 
-    # Update the restaurant details
-    cursor.execute("""
-        UPDATE restaurants
-        SET restaurant_nom = %s, restaurant_adresse1 = %s, restaurant_adresse2 = %s,
-            restaurant_adresse3 = %s, restaurant_cp = %s, restaurant_ville = %s,
-            restaurant_coords = %s, client_id = %s
-        WHERE restaurant_id = %s
-    """, (restaurant_nom, restaurant_adresse1, restaurant_adresse2, restaurant_adresse3, 
-          restaurant_cp, restaurant_ville, restaurant_coords, client_id, restaurant_id))
+    # 2. Merge Data with Updated Data
+    # If a value is None in the updated_data, use the original value from the database.
+    merged_data = {key: updated_data.get(key, current_data_dict[key]) for key in columns}
 
+    # 3. Update the Database
+    # Only update the fields provided in the updated_data to prevent overriding other fields.
+    update_columns = ", ".join(f"{key} = %s" for key in updated_data.keys())
+    sql_update_query = f"UPDATE restaurants SET {update_columns} WHERE restaurant_id = %s"
+    
+    values = [merged_data[key] for key in updated_data.keys()]
+    values.append(restaurant_id)
+    
+    cursor.execute(sql_update_query, values)
     cnx.commit()
-    print("Restaurant modifié avec succès!")
+
     cursor.close()
     cnx.close()
 
+    return {"message": "Restaurant updated successfully!"}
 
-def voir_restaurant():
+
+
+
+
+def visualiser_restaurant(restaurant_id):
     cnx, cursor = create_connection(dictionary=True)
 
-    restaurant_id = input("Entrez l'ID du restaurant que vous souhaitez voir: ")
+    # No need to prompt the user for restaurant_id as we're passing it now
     cursor.execute("SELECT * FROM restaurants WHERE restaurant_id = %s", (restaurant_id,))
     restaurant = cursor.fetchone()
 
@@ -103,30 +97,26 @@ def voir_restaurant():
 
     cursor.close()
     cnx.close()
+    return restaurant  # Ensure you return the fetched restaurant
 
 
-def supprimer_restaurant():
+
+def supprimer_restaurant(restaurant_id):
     cnx, cursor = create_connection()
 
-    restaurant_id = input("Entrez l'ID du restaurant à supprimer: ")
-
-    # Confirm deletion
-    confirmation = input("Êtes-vous sûr de vouloir supprimer ce restaurant? (Oui/Non): ").lower()
-    if confirmation != 'oui':
-        print("Opération annulée.")
-        return
-
-    cursor.execute("DELETE FROM restaurants WHERE restaurant_id = %s", (restaurant_id,))
-    cnx.commit()
-
-    print("Restaurant supprimé avec succès!")
-    cursor.close()
-    cnx.close()
+    try:
+        cursor.execute("DELETE FROM restaurants WHERE restaurant_id = %s", (restaurant_id,))
+        cnx.commit()
+        message = "Restaurant supprimé avec succès!"
+    except mysql.connector.Error as err:
+        message = f"Error: {err}"
+    finally:
+        cursor.close()
+        cnx.close()
+    
+    return {"message": message}
 
 
-
-
-# ... [main execution block]
 
 
 if __name__ == '__main__':
@@ -148,7 +138,7 @@ if __name__ == '__main__':
         elif choix == "3":
             modifier_restaurant()
         elif choix == "4":
-            voir_restaurant()
+            visualiser_restaurant()
         elif choix == "5":
             supprimer_restaurant()
         elif choix == "6":

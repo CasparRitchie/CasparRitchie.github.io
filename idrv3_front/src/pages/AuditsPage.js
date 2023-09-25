@@ -1,7 +1,9 @@
-import React from 'react';
+import React, { useState } from 'react';
 import axios from 'axios';
 
 function AuditsPage() {
+    const [audits, setAudits] = useState([]);
+    const [specificAudit, setSpecificAudit] = useState(null);
 
     const handleAjouterAudit = async () => {
         try {
@@ -15,7 +17,7 @@ function AuditsPage() {
                 telephone: "+1234567890"
             };
 
-            const response = await axios.post('http://localhost:5000/ajouter_audit', dataToSend);
+            const response = await axios.post('http://localhost:5001/audits', dataToSend);
 
             if (response.data && response.data.message) {
                 alert(response.data.message);
@@ -28,10 +30,9 @@ function AuditsPage() {
 
     const handleAfficherAudits = async () => {
         try {
-            const response = await axios.get('http://localhost:5000/afficher_audits');
-
-            if (response.data && response.data.audits) {
-                alert(JSON.stringify(response.data.audits, null, 2));
+            const response = await axios.get('http://localhost:5001/audits');
+            if (response.data) {
+                setAudits(response.data); // Update the state with the audits
             }
         } catch (error) {
             alert('Error fetching audits.');
@@ -43,7 +44,7 @@ function AuditsPage() {
     const handleVisualiserAudit = async () => {
         const auditId = prompt("Entrez l'ID de l'audit que vous souhaitez voir:");
         try {
-            const response = await axios.get(`http://localhost:5000/visualiser_audit/${auditId}`);
+            const response = await axios.get(`http://localhost:5001/audits/${auditId}`);
             if (response.data && response.data.audit) {
                 alert(JSON.stringify(response.data.audit, null, 2));
             }
@@ -62,7 +63,7 @@ function AuditsPage() {
     const handleSupprimerAudit = async () => {
         const auditId = prompt("Entrez l'ID de l'audit à supprimer:");
         try {
-            const response = await axios.delete(`http://localhost:5000/supprimer_audit/${auditId}`);
+            const response = await axios.delete(`http://localhost:5001/audits/${auditId}`);
             if (response.data && response.data.message) {
                 alert(response.data.message);
             }
@@ -81,6 +82,49 @@ function AuditsPage() {
             <button onClick={handleVisualiserAudit}>Visualiser Audit</button>
             <button onClick={handleChangerAudit}>Changer Audit</button>
             <button onClick={handleSupprimerAudit}>Supprimer Audit</button>
+
+            {specificAudit && (
+    <div>
+        <h3>Détails de l'audit sélectionné:</h3>
+        <p>ID: {specificAudit.audit_id}</p>
+        <p>Client: {specificAudit.client_nom}</p>
+        
+        {specificAudit.constats && specificAudit.constats.length > 0 && (
+            <div>
+                <h4>Constats:</h4>
+                {specificAudit.constats.map((constat, index) => (
+                    <div key={index}>
+                        <p>Constat ID: {constat.constat}</p>
+                        <p>Élément Nom: {constat.element_nom}</p>
+                        <p>Score: {constat.score}</p>
+                        {/* If you have an 'observations' field in constat, uncomment the next line */}
+                        {/* <p>Observations: {constat.observations}</p> */}
+                    </div>
+                ))}
+            </div>
+        )}
+
+        <button onClick={() => setSpecificAudit(null)}>
+            Effacer les détails de l'audit affiché
+        </button>
+    </div>
+)}
+
+
+
+
+            <ul>
+                {audits.map(audit => (
+                    <li key={audit.audit_id} onClick={() => setSpecificAudit(audit)}>
+                        <div>
+                            <p>ID: {audit.audit_id}</p>
+                            <p>Client: {audit.client_nom}</p>
+                            {/* ... other details for each audit */}
+                        </div>
+                    </li>
+                ))}
+            </ul>
+
         </div>
     );
 }

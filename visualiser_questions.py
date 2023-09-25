@@ -1,4 +1,5 @@
 import mysql.connector
+import pandas as pd
 from db_utils import create_connection
 
 
@@ -7,26 +8,27 @@ def visualiser_questions():
     cnx, cursor = create_connection()
 
     try:
-        # Fetch distinct chapitres
-        cursor.execute("SELECT DISTINCT chapitre FROM elements ORDER BY chapitre")
-        chapitres = cursor.fetchall()
+        # Fetch all data into a DataFrame
+        query = """
+            SELECT chapitre, titre, sous_titre, element_nom
+            FROM elements
+            ORDER BY chapitre, titre, sous_titre
+        """
+        df = pd.read_sql(query, cnx)
 
-        for (chapitre,) in chapitres:
-            print(f"Chapitre: {chapitre}")
-            cursor.execute("SELECT DISTINCT titre FROM elements WHERE chapitre = %s ORDER BY titre", (chapitre,))
-            titres = cursor.fetchall()
-            for (titre,) in titres:
-                print(f"\tTitre: {titre}")
-                cursor.execute("""
-                    SELECT sous_titre, element_nom 
-                    FROM elements 
-                    WHERE chapitre = %s AND titre = %s 
-                    ORDER BY sous_titre
-                """, (chapitre, titre))
-                elements = cursor.fetchall()
-                for sous_titre, element_nom in elements:
-                    print(f"\t\tSous-titre: {sous_titre}")
-                    print(f"\t\tElement: {element_nom}")
+        # Structure the data (This is just a sample. Depending on your final structure, this may need modifications.)
+        structured_data = {
+            chapitre: {
+                titre: df[(df['chapitre'] == chapitre) & (df['titre'] == titre)][['sous_titre', 'element_nom']].to_dict('records')
+                for titre in df[df['chapitre'] == chapitre]['titre'].unique()
+            }
+            for chapitre in df['chapitre'].unique()
+        }
+
+        # Convert structured data to JSON format
+        json_data = pd.DataFrame(structured_data).to_json(orient='split')
+
+        return json_data
 
     except mysql.connector.Error as err:
         print(f"Error: {err}")
@@ -36,4 +38,5 @@ def visualiser_questions():
         cnx.close()
 
 if __name__ == '__main__':
-    visualiser_questions()
+    json_output = visualiser_questions()
+    print(json_output)
