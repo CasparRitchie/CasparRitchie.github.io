@@ -19,7 +19,7 @@
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "heroku-postbuild": "npm install && npm run build"
+    "heroku-postbuild": "cd idrv3_front && ls -al public && npm install && npm run build"
   },
   
   "eslintConfig": {
