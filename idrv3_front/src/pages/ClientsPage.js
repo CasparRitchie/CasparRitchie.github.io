@@ -35,7 +35,7 @@ function ClientsPage() {
                 client_contact_principal: clientContactPrincipal
             });
 
-            const response = await axios.post('http://localhost:5001/clients/', dataToSend);
+            const response = await axios.post('/clients/', dataToSend);
 
             if (response.data && response.data.message) {
                 alert(response.data.message);
@@ -48,7 +48,7 @@ function ClientsPage() {
     
     const handleAfficherClients = async () => {
         try {
-            const response = await axios.get('http://localhost:5001/clients');
+            const response = await axios.get('/clients');
             if (response.data) {
                 setClients(response.data);
             }
@@ -61,7 +61,7 @@ function ClientsPage() {
     const handleVisualiserClient = async () => {
         const clientId = prompt("Entrez l'ID du client que vous souhaitez voir:");
         try {
-            const response = await axios.get(`http://localhost:5001/clients/${clientId}`);
+            const response = await axios.get(`/clients/${clientId}`);
             if (response.data && response.data.client) {
                 setSpecificClient(response.data.client);
             }
@@ -82,7 +82,7 @@ function ClientsPage() {
         };
 
         try {
-            const response = await axios.put(`http://localhost:5001/clients/${clientId}`, dataToSend);
+            const response = await axios.put(`/clients/${clientId}`, dataToSend);
             if (response.data && response.data.message) {
                 alert(response.data.message);
             }
@@ -95,7 +95,7 @@ function ClientsPage() {
     const handleSupprimerClient = async () => {
         const clientId = prompt("Entrez l'ID du client à supprimer:");
         try {
-            const response = await axios.delete(`http://localhost:5001/clients/${clientId}`);
+            const response = await axios.delete(`/clients/${clientId}`);
             if (response.data && response.data.message) {
                 alert(response.data.message);
             }

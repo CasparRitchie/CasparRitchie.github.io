@@ -7,7 +7,7 @@ function ReponsesPossiblesPage() {
 
   const handleAfficherReponsesPossibles = async () => {
     try {
-      const response = await axios.get('http://localhost:5001/reponses_possibles');
+      const response = await axios.get('/reponses_possibles');
       if (response.data && Array.isArray(response.data) && response.data.length > 0) {
         setReponses(response.data);
       }
@@ -20,7 +20,7 @@ function ReponsesPossiblesPage() {
   const handleVisualiserReponsePossible = async () => {
     const reponseId = prompt("Entrez l'ID de la réponse que vous souhaitez voir:");
     try {
-      const response = await axios.get(`http://localhost:5001/reponses_possibles/${reponseId}`);
+      const response = await axios.get(`/reponses_possibles/${reponseId}`);
       if (response.data) {
         setSpecificReponse(response.data);
       }
@@ -39,7 +39,7 @@ function ReponsesPossiblesPage() {
       }
   
       // Fetch the current details of the response before modifying
-      const fetchResponse = await axios.get(`http://localhost:5001/reponses_possibles/${reponseId}`);
+      const fetchResponse = await axios.get(`/reponses_possibles/${reponseId}`);
       if (!fetchResponse.data) {
         alert("Erreur de récupération de la réponse.");
         return;
@@ -54,7 +54,7 @@ function ReponsesPossiblesPage() {
         response_value: updatedResponseValue,
         notes_structure_id: updatedNotesStructureId
       };
-      const response = await axios.put(`http://localhost:5001/reponses_possibles/${reponseId}`, dataToSend);
+      const response = await axios.put(`/reponses_possibles/${reponseId}`, dataToSend);
   
       if (response.data && response.data.message) {
         alert(response.data.message);
@@ -85,7 +85,7 @@ function ReponsesPossiblesPage() {
         response_value: responseValue,
         notes_structure_id: notesStructureId
       };
-      const response = await axios.post('http://localhost:5001/reponses_possibles/', dataToSend);
+      const response = await axios.post('/reponses_possibles/', dataToSend);
   
       console.log("Received data:", response.data);
       if (response.data && response.data.message) {
@@ -102,7 +102,7 @@ function ReponsesPossiblesPage() {
   const handleSupprimerReponsePossible = async () => {
     const reponseId = prompt("Entrez l'ID de la réponse à supprimer:");
     try {
-      const response = await axios.delete(`http://localhost:5001/reponses_possibles/${reponseId}`);
+      const response = await axios.delete(`/reponses_possibles/${reponseId}`);
       if (response.data && response.data.message) {
         alert(response.data.message);
       }

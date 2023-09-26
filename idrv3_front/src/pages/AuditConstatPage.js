@@ -13,7 +13,7 @@ function AuditConstatPage() {
 
     const fetchAudits = async () => {
         try {
-            const response = await axios.get('http://localhost:5001/audits/');
+            const response = await axios.get('/audits/');
             setAudits(response.data);
         } catch (error) {
             console.error("Error fetching audits:", error);
@@ -30,7 +30,7 @@ function AuditConstatPage() {
         };
 
         try {
-            await axios.post('http://localhost:5001/audits/', newAuditData);
+            await axios.post('/audits/', newAuditData);
             fetchAudits(); // Refresh audits after creating a new one
         } catch (error) {
             console.error("Error creating new audit:", error);
@@ -44,7 +44,7 @@ function AuditConstatPage() {
 
     const fetchConstats = async (auditId) => {
         try {
-            const response = await axios.get(`http://localhost:5001/constats/audit/${auditId}/`);
+            const response = await axios.get('/constats/audit/${auditId}/');
             setConstats(response.data);
         } catch (error) {
             console.error("Error fetching constats for audit:", error);
@@ -61,7 +61,7 @@ function AuditConstatPage() {
         };
 
         try {
-            await axios.post('http://localhost:5001/constats/', newConstatData);
+            await axios.post('/constats/', newConstatData);
             if (selectedAudit) {
                 fetchConstats(selectedAudit.id); // Refresh constats after creating a new one
             }

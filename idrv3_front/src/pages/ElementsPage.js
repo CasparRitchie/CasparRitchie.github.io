@@ -21,7 +21,7 @@ function ElementsPage() {
                 notes_structure_id,
             };
     
-            const response = await axios.post('http://localhost:5001/elements/', dataToSend);
+            const response = await axios.post('/elements/', dataToSend);
     
             if (response.data && response.data.message) {
                 alert(response.data.message);
@@ -34,7 +34,7 @@ function ElementsPage() {
 
     const handleAfficherElements = async () => {
         try {
-            const response = await axios.get('http://localhost:5001/elements');
+            const response = await axios.get('/elements');
             if (response.data && response.data) {
                 setElements(response.data);
             }
@@ -47,7 +47,7 @@ function ElementsPage() {
     const handleVisualiserElement = async () => {
         const elementId = prompt("Entrez l'ID de l'élément que vous souhaitez voir:");
         try {
-            const response = await axios.get(`http://localhost:5001/elements/${elementId}`);
+            const response = await axios.get(`/elements/${elementId}`);
             if (response.data && response.data.element) {
                 setSpecificElement(response.data.element);
             } else if (response.data && response.data.message) {
@@ -77,7 +77,7 @@ function ElementsPage() {
         };
     
         try {
-            const response = await axios.put(`http://localhost:5001/elements/${elementId}`, dataToSend);
+            const response = await axios.put(`/elements/${elementId}`, dataToSend);
             if (response.data && response.data.message) {
                 alert(response.data.message);
             }
@@ -90,7 +90,7 @@ function ElementsPage() {
     const handleSupprimerElement = async () => {
         const elementId = prompt("Entrez l'ID de l'élément à supprimer:");
         try {
-            const response = await axios.delete(`http://localhost:5001/elements/${elementId}`);
+            const response = await axios.delete(`/elements/${elementId}`);
             if (response.data && response.data.message) {
                 alert(response.data.message);
             }
@@ -117,7 +117,7 @@ function ElementsPage() {
         // Loop through the elements and send a PUT request for each one
         for (let element of elements) {
             try {
-                const response = await axios.put(`http://localhost:5001/elements/${element.element_id}`, element);
+                const response = await axios.put(`/elements/${element.element_id}`, element);
                 if (response.data && response.data.message) {
                     console.log(`Element ${element.element_id} updated:`, response.data.message);
                 }

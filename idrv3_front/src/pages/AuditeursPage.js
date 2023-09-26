@@ -25,7 +25,7 @@ function AuditeursPage() {
               permissions: permissions || null // If empty, send null
           };
   
-          const response = await axios.post('http://localhost:5001/auditeurs/', dataToSend);
+          const response = await axios.post('/auditeurs/', dataToSend);
   
           if (response.data && response.data.message) {
               alert(response.data.message);
@@ -39,7 +39,7 @@ function AuditeursPage() {
 
     const handleAfficherAuditeurs = async () => {
       try {
-          const response = await axios.get('http://localhost:5001/auditeurs');
+          const response = await axios.get('/auditeurs');
           if (response.data) {
               setAuditeurs(response.data);
           }
@@ -54,7 +54,7 @@ function AuditeursPage() {
       
       const auditeurId = prompt("Entrez l'ID de l'auditeur que vous souhaitez voir:");
       try {
-          const response = await axios.get(`http://localhost:5001/auditeurs/${auditeurId}`);
+          const response = await axios.get(`/auditeurs/${auditeurId}`);
           if (response.data) {
             setSpecificAuditeur(response.data.auditeur);
               console.log("Data from server:", response.data); // Add this line
@@ -82,7 +82,7 @@ function AuditeursPage() {
       };
 
       try {
-          const response = await axios.put(`http://localhost:5001/auditeurs/${auditeurId}`, dataToSend);
+          const response = await axios.put(`/auditeurs/${auditeurId}`, dataToSend);
           if (response.data && response.data.message) {
               alert(response.data.message);
           }
@@ -96,7 +96,7 @@ function AuditeursPage() {
     const handleSupprimerAuditeur = async () => {
       const auditeurId = prompt("Entrez l'ID de l'auditeur à supprimer:");
       try {
-          const response = await axios.delete(`http://localhost:5001/auditeurs/${auditeurId}`);
+          const response = await axios.delete(`/auditeurs/${auditeurId}`);
           if (response.data && response.data.message) {
               alert(response.data.message);
           }

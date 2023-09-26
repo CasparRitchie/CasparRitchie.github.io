@@ -17,7 +17,7 @@ function LegendesPage() {
                 legende_elements: legendeElements
             };
 
-            const response = await axios.post('http://localhost:5001/legendes/', dataToSend);
+            const response = await axios.post('/legendes/', dataToSend);
 
             if (response.data && response.data.message) {
                 alert(response.data.message);
@@ -30,7 +30,7 @@ function LegendesPage() {
 
     const handleAfficherLegendes = async () => {
         try {
-            const response = await axios.get('http://localhost:5001/legendes');
+            const response = await axios.get('/legendes');
             if (response.data && Array.isArray(response.data)) {
                 setLegendes(response.data);
             }
@@ -51,7 +51,7 @@ function LegendesPage() {
         }
     
         try {
-            const response = await axios.get(`http://localhost:5001/legendes/${legendeId}`);
+            const response = await axios.get(`/legendes/${legendeId}`);
             if (response.data) {
                 setSpecificLegende(response.data);
             }
@@ -67,7 +67,7 @@ function LegendesPage() {
         
         try {
             // Fetch the current data of the legende
-            const response = await axios.get(`http://localhost:5001/legendes/${legendeId}`);
+            const response = await axios.get(`/legendes/${legendeId}`);
             if (!response.data) {
                 alert("Erreur lors de la récupération de la légende.");
                 return;
@@ -88,7 +88,7 @@ function LegendesPage() {
             };
     
             // Update the legende with the modified data
-            const updateResponse = await axios.put(`http://localhost:5001/legendes/${legendeId}`, dataToSend);
+            const updateResponse = await axios.put(`/legendes/${legendeId}`, dataToSend);
             
             if (updateResponse.data && updateResponse.data.message) {
                 alert(updateResponse.data.message);
@@ -104,7 +104,7 @@ function LegendesPage() {
     const handleSupprimerLegende = async () => {
         const legendeId = prompt("Entrez l'ID de la légende à supprimer:");
         try {
-            const response = await axios.delete(`http://localhost:5001/legendes/${legendeId}`);
+            const response = await axios.delete(`/legendes/${legendeId}`);
             if (response.data && response.data.message) {
                 alert(response.data.message);
             }

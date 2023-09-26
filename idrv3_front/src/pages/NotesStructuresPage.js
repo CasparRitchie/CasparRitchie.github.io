@@ -7,7 +7,7 @@ function NotesStructuresPage() {
 
   const handleAfficherNotesStructures = async () => {
     try {
-      const response = await axios.get('http://localhost:5001/notes_structures');
+      const response = await axios.get('/notes_structures');
       if (Array.isArray(response.data)) {
         setStructures(response.data);
       }
@@ -25,7 +25,7 @@ function NotesStructuresPage() {
     }
 
     try {
-      const response = await axios.get(`http://localhost:5001/notes_structures/${structureId}`);
+      const response = await axios.get(`/notes_structures/${structureId}`);
       if (response.data) {
         setSpecificStructure(response.data);
       }
@@ -41,7 +41,7 @@ function NotesStructuresPage() {
     const est_actif = window.confirm("Est-ce actif?");
 
     try {
-      const response = await axios.post('http://localhost:5001/notes_structures/', { notes_structure_nom, element_audite, est_actif });
+      const response = await axios.post('/notes_structures/', { notes_structure_nom, element_audite, est_actif });
       if (response.data) {
         setStructures(prevStructures => [...prevStructures, response.data]);
       }
@@ -64,7 +64,7 @@ function NotesStructuresPage() {
     const new_est_actif = window.confirm("Est-ce actif?");
 
     try {
-      const response = await axios.put(`http://localhost:5001/notes_structures/${structureId}`, { notes_structure_nom: new_notes_structure_nom, element_audite: new_element_audite, est_actif: new_est_actif });
+      const response = await axios.put(`/notes_structures/${structureId}`, { notes_structure_nom: new_notes_structure_nom, element_audite: new_element_audite, est_actif: new_est_actif });
       if (response.data) {
         setStructures(prevStructures => prevStructures.map(structure => structure.notes_structure_id.toString() === structureId ? response.data : structure));
       }
@@ -89,7 +89,7 @@ function NotesStructuresPage() {
     }
   
     try {
-      await axios.delete(`http://localhost:5001/notes_structures/${structureId}`);
+      await axios.delete(`/notes_structures/${structureId}`);
       setStructures(prevStructures => prevStructures.filter(structure => structure.notes_structure_id.toString() !== structureId));
     } catch (error) {
       alert('Erreur lors de la suppression de la structure.');

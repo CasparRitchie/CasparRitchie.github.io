@@ -105,8 +105,8 @@ useEffect(() => {
 }, [auditData]);
     
     useEffect(() => {
-        axios.get('/create-audit/audit_structure')
-        .then(response => {
+        axios.get('http://localhost:5001/create-audit/audit_structure')
+            .then(response => {
                 setAuditStructure(response.data);
             })
             .catch(error => {
@@ -118,7 +118,7 @@ useEffect(() => {
         
         handleAfficherReponsesPossibles();
         // TODO: Add a function to fetch `notesStructure`
-        axios.get('/notes_structures')
+        axios.get('http://localhost:5001/notes_structures')
         .then(response => {
             if (response.data) {
                 setNotesStructure(response.data);
@@ -132,7 +132,7 @@ useEffect(() => {
     
     const handleAfficherReponsesPossibles = async () => {
         try {
-            const response = await axios.get('/reponses_possibles');
+            const response = await axios.get('http://localhost:5001/reponses_possibles');
             if (response.data) {
                 setReponses(response.data);
             }
@@ -164,7 +164,7 @@ useEffect(() => {
 
     const handleAfficherGestionnaires = async () => {
         try {
-            const response = await axios.get('/gestionnaires');
+            const response = await axios.get('http://localhost:5001/gestionnaires');
             if (response.data && response.data.gestionnaires) {
                 setGestionnaires(response.data.gestionnaires);
             }
@@ -176,7 +176,7 @@ useEffect(() => {
 
     const handleAfficherRestaurants = async () => {
         try {
-            const response = await axios.get('/restaurants');
+            const response = await axios.get('http://localhost:5001/restaurants');
             if (response.data && response.data.restaurants) {
                 setRestaurants(response.data.restaurants);
             }
@@ -188,7 +188,7 @@ useEffect(() => {
 
     const handleAfficherClients = async () => {
         try {
-            const response = await axios.get('/clients');
+            const response = await axios.get('http://localhost:5001/clients');
             if (response.data) {
                 setClients(response.data);
             }

@@ -37,7 +37,7 @@ function ClientContactsPage() {
                 client_id: clientId
             };
 
-            const response = await axios.post('http://localhost:5001/client_contacts/', dataToSend);
+            const response = await axios.post('/client_contacts/', dataToSend);
 
             if (response.data && response.data.message) {
                 alert(response.data.message);
@@ -50,7 +50,7 @@ function ClientContactsPage() {
 
     const handleAfficherContacts = async () => {
         try {
-            const response = await axios.get('http://localhost:5001/client_contacts');
+            const response = await axios.get('/client_contacts');
             if (response.data) {
                 setContacts(response.data);
             }
@@ -63,7 +63,7 @@ function ClientContactsPage() {
     const handleVisualiserContact = async () => {
         const contactId = prompt("Entrez l'ID du contact que vous souhaitez voir:");
         try {
-            const response = await axios.get(`http://localhost:5001/client_contacts/${contactId}`);
+            const response = await axios.get(`/client_contacts/${contactId}`);
             if (response.data) {
                 setSpecificContact(response.data);
             }
@@ -82,7 +82,7 @@ function ClientContactsPage() {
     const handleSupprimerContact = async () => {
         const contactId = prompt("Entrez l'ID du contact à supprimer:");
         try {
-            const response = await axios.delete(`http://localhost:5001/client_contacts/${contactId}`);
+            const response = await axios.delete(`/client_contacts/${contactId}`);
             if (response.data && response.data.message) {
                 alert(response.data.message);
             }

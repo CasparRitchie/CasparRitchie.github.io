@@ -24,7 +24,7 @@ function ElementsAuditesDetailsPrestationsPage() {
                 elements_audites_details_prestation_sous_titre: sous_titre
             };
         
-            const response = await axios.post('http://localhost:5001/elements_audites_prestations_details/', dataToSend);
+            const response = await axios.post('/elements_audites_prestations_details/', dataToSend);
         
             if (response.data && response.data.message) {
                 alert(response.data.message);
@@ -44,7 +44,7 @@ function ElementsAuditesDetailsPrestationsPage() {
         }
     
         try {
-            const response = await axios.get(`http://localhost:5001/elements_audites_prestations_details/${detailPrestationId}`);
+            const response = await axios.get(`/elements_audites_prestations_details/${detailPrestationId}`);
             if (response.data && response.data.element) {
                 setSpecificDetailPrestation(response.data.element);
             } else if (response.data && response.data.message) {
@@ -58,7 +58,7 @@ function ElementsAuditesDetailsPrestationsPage() {
 
     const handleAfficherDetailsPrestations = async () => {
         try {
-            const response = await axios.get('http://localhost:5001/elements_audites_prestations_details');
+            const response = await axios.get('/elements_audites_prestations_details');
             if (response.data) {
                 setDetailsPrestations(response.data);
             }
@@ -89,7 +89,7 @@ function ElementsAuditesDetailsPrestationsPage() {
         };
     
         try {
-            const response = await axios.put(`http://localhost:5001/elements_audites_prestations_details/${detailPrestationId}`, dataToSend);
+            const response = await axios.put(`/elements_audites_prestations_details/${detailPrestationId}`, dataToSend);
             if (response.data && response.data.message) {
                 alert(response.data.message);
             }
@@ -108,7 +108,7 @@ function ElementsAuditesDetailsPrestationsPage() {
         }
     
         try {
-            const response = await axios.delete(`http://localhost:5001/elements_audites_prestations_details/${detailPrestationId}`);
+            const response = await axios.delete(`/elements_audites_prestations_details/${detailPrestationId}`);
             if (response.data && response.data.message) {
                 alert(response.data.message);
             }

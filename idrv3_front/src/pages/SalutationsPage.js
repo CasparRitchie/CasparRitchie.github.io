@@ -28,7 +28,7 @@ function SalutationsPage() {
                 }
             };
     
-            const response = await axios.post('http://localhost:5001/salutations/', dataToSend, config);
+            const response = await axios.post('/salutations/', dataToSend, config);
             
             if (response.data && response.data.message) {
                 alert(response.data.message);
@@ -45,7 +45,7 @@ function SalutationsPage() {
 
     const handleAfficherSalutations = async () => {
         try {
-            const response = await axios.get('http://localhost:5001/salutations');
+            const response = await axios.get('/salutations');
             if (response.data && response.data.salutations) {
                 setSalutations(response.data.salutations);
             }
@@ -60,7 +60,7 @@ function SalutationsPage() {
     const handleVisualiserSalutation = async () => {
         const salutationId = prompt("Entrez l'ID de la salutation que vous souhaitez voir:");
         try {
-            const response = await axios.get(`http://localhost:5001/salutations/${salutationId}`);
+            const response = await axios.get(`/salutations/${salutationId}`);
             if (response.data && response.data.salutation) {
                 setSpecificSalutation(response.data.salutation);
                 // alert(JSON.stringify(response.data.salutation, null, 2));
@@ -77,7 +77,7 @@ function SalutationsPage() {
         const salutationId = prompt("Entrez l'ID de la salutation à modifier:");
         const newSalutation = prompt("Entrez la nouvelle salutation:");
         try {
-            const response = await axios.put(`http://localhost:5001/salutations/${salutationId}`, { salutation: newSalutation });
+            const response = await axios.put(`/salutations/${salutationId}`, { salutation: newSalutation });
             if (response.data && response.data.message) {
                 alert(response.data.message);
             }
@@ -90,7 +90,7 @@ function SalutationsPage() {
 
     const handleSupprimerSalutation = async () => {
         const salutationId = prompt("Entrez l'ID de la salutation à supprimer:");
-        const url = `http://localhost:5001/salutations/${salutationId}`;
+        const url = `/salutations/${salutationId}`;
         console.log("Attempting DELETE request to:", url);
         try {
             const response = await axios.delete(url);

@@ -21,7 +21,7 @@ function ConstatsPage() {
                 auditeur_id: auditeur_id
             };
     
-            const response = await axios.post('http://localhost:5001/constats/', dataToSend);
+            const response = await axios.post('/constats/', dataToSend);
     
             if (response.data && response.data.message) {
                 alert(response.data.message);
@@ -35,7 +35,7 @@ function ConstatsPage() {
 
     const handleAfficherConstats = async () => {
         try {
-            const response = await axios.get('http://localhost:5001/constats');
+            const response = await axios.get('/constats');
             if (response.data) {
                 setConstats(response.data);
             }
@@ -48,7 +48,7 @@ function ConstatsPage() {
     const handleVisualiserConstat = async () => {
         const constatId = prompt("Entrez l'ID du constat que vous souhaitez voir:");
         try {
-            const response = await axios.get(`http://localhost:5001/constats/${constatId}`);
+            const response = await axios.get(`/constats/${constatId}`);
             if (response.data) {
                 setSpecificConstat(response.data);
             }
@@ -66,7 +66,7 @@ function ConstatsPage() {
     const handleSupprimerConstat = async () => {
         const constatId = prompt("Entrez l'ID du constat à supprimer:");
         try {
-            const response = await axios.delete(`http://localhost:5001/constats/${constatId}`);
+            const response = await axios.delete(`/constats/${constatId}`);
             if (response.data && response.data.message) {
                 alert(response.data.message);
             }

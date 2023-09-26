@@ -15,7 +15,7 @@ function GestionnairesPage() {
                 gestionnaire_coords: gestionnaireCoords,
             };
     
-            const response = await axios.post('http://localhost:5001/gestionnaires/', dataToSend);
+            const response = await axios.post('/gestionnaires/', dataToSend);
     
             if (response.data && response.data.message) {
                 alert(response.data.message);
@@ -28,7 +28,7 @@ function GestionnairesPage() {
 
     const handleAfficherGestionnaires = async () => {
         try {
-            const response = await axios.get('http://localhost:5001/gestionnaires');
+            const response = await axios.get('/gestionnaires');
             if (response.data && response.data.gestionnaires) {
                 setGestionnaires(response.data.gestionnaires);
             }
@@ -41,7 +41,7 @@ function GestionnairesPage() {
     const handleVisualiserGestionnaire = async () => {
         const gestionnaireId = prompt("Entrez l'ID du gestionnaire que vous souhaitez voir:");
         try {
-            const response = await axios.get(`http://localhost:5001/gestionnaires/${gestionnaireId}`);
+            const response = await axios.get(`/gestionnaires/${gestionnaireId}`);
             if (response.data && response.data.gestionnaire) {
                 setSpecificGestionnaire(response.data.gestionnaire);
             }
@@ -62,7 +62,7 @@ function GestionnairesPage() {
         };
     
         try {
-            const response = await axios.put(`http://localhost:5001/gestionnaires/${gestionnaireId}`, dataToSend);
+            const response = await axios.put(`/gestionnaires/${gestionnaireId}`, dataToSend);
             if (response.data && response.data.message) {
                 alert(response.data.message);
             }
@@ -75,7 +75,7 @@ function GestionnairesPage() {
     const handleSupprimerGestionnaire = async () => {
         const gestionnaireId = prompt("Entrez l'ID du gestionnaire à supprimer:");
         try {
-            const response = await axios.delete(`http://localhost:5001/gestionnaires/${gestionnaireId}`);
+            const response = await axios.delete(`/gestionnaires/${gestionnaireId}`);
             if (response.data && response.data.message) {
                 alert(response.data.message);
             }

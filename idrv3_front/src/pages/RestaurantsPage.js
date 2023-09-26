@@ -27,7 +27,7 @@ function RestaurantsPage() {
                 client_id: clientId
             };
     
-            const response = await axios.post('http://localhost:5001/restaurants/', dataToSend);
+            const response = await axios.post('/restaurants/', dataToSend);
     
             if (response.data && response.data.message) {
                 alert(response.data.message);
@@ -41,7 +41,7 @@ function RestaurantsPage() {
 
     const handleAfficherRestaurants = async () => {
         try {
-            const response = await axios.get('http://localhost:5001/restaurants');
+            const response = await axios.get('/restaurants');
             if (response.data && response.data.restaurants) {
                 setRestaurants(response.data.restaurants);
             }
@@ -54,7 +54,7 @@ function RestaurantsPage() {
     const handleVisualiserRestaurant = async () => {
         const restaurantId = prompt("Entrez l'ID du restaurant que vous souhaitez voir:");
         try {
-            const response = await axios.get(`http://localhost:5001/restaurants/${restaurantId}`);
+            const response = await axios.get(`/restaurants/${restaurantId}`);
             if (response.data && response.data.restaurant) {
                 setSpecificRestaurant(response.data.restaurant);
             }
@@ -94,7 +94,7 @@ function RestaurantsPage() {
         });
     
         try {
-            const response = await axios.put(`http://localhost:5001/restaurants/${restaurantId}`, dataToSend);
+            const response = await axios.put(`/restaurants/${restaurantId}`, dataToSend);
             if (response.data && response.data.message) {
                 alert(response.data.message);
             }
@@ -107,7 +107,7 @@ function RestaurantsPage() {
     const handleSupprimerRestaurant = async () => {
         const restaurantId = prompt("Entrez l'ID du restaurant à supprimer:");
         try {
-            const response = await axios.delete(`http://localhost:5001/restaurants/${restaurantId}`);
+            const response = await axios.delete(`/restaurants/${restaurantId}`);
             if (response.data && response.data.message) {
                 alert(response.data.message);
             }

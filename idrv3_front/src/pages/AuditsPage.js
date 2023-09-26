@@ -17,7 +17,7 @@ function AuditsPage() {
                 telephone: "+1234567890"
             };
 
-            const response = await axios.post('http://localhost:5001/audits', dataToSend);
+            const response = await axios.post('/audits', dataToSend);
 
             if (response.data && response.data.message) {
                 alert(response.data.message);
@@ -30,7 +30,7 @@ function AuditsPage() {
 
     const handleAfficherAudits = async () => {
         try {
-            const response = await axios.get('http://localhost:5001/audits');
+            const response = await axios.get('/audits');
             if (response.data) {
                 setAudits(response.data); // Update the state with the audits
             }
@@ -44,7 +44,7 @@ function AuditsPage() {
     const handleVisualiserAudit = async () => {
         const auditId = prompt("Entrez l'ID de l'audit que vous souhaitez voir:");
         try {
-            const response = await axios.get(`http://localhost:5001/audits/${auditId}`);
+            const response = await axios.get(`/audits/${auditId}`);
             if (response.data && response.data.audit) {
                 alert(JSON.stringify(response.data.audit, null, 2));
             }
@@ -63,7 +63,7 @@ function AuditsPage() {
     const handleSupprimerAudit = async () => {
         const auditId = prompt("Entrez l'ID de l'audit à supprimer:");
         try {
-            const response = await axios.delete(`http://localhost:5001/audits/${auditId}`);
+            const response = await axios.delete(`/audits/${auditId}`);
             if (response.data && response.data.message) {
                 alert(response.data.message);
             }
