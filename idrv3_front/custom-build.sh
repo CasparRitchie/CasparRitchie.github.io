@@ -3,11 +3,14 @@
 # Run the regular build command
 npm run build
 
+# Navigate to the build directory
+cd build
+
 # Check if the build directory has the expected structure
-if [ ! -d "build/public" ]; then
+if [ ! -d "public" ]; then
   # Create a public directory inside build
-  mkdir build/public
+  mkdir public
 
   # Move all files from build to build/public except for the public directory itself
-  mv build/* build/public/ 2>/dev/null
+  mv * public/ 2>/dev/null
 fi
