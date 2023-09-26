@@ -1,0 +1,9 @@
+{
+    "db": {
+        "user": "root",
+        "password": "password",
+        "host": "idr-app-v4.cchwuesegse8.eu-north-1.rds.amazonaws.com",
+        "database": "audit_responses_db",
+        "raise_on_warnings": true
+    }
+}
